@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>نظام النجاح</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a14; --bg2:#12121f; --bg3:#1a1a2e;
+  --card:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.08);
+  --red:#ff5757; --teal:#00d4aa; --yellow:#ffd166; --blue:#74b9ff; --purple:#a29bfe; --orange:#fd9644;
+  --text:#f0f0f0; --text2:rgba(255,255,255,0.5); --text3:rgba(255,255,255,0.22);
+  --font:'Tajawal',sans-serif; --r:16px; --safe:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
+body{display:flex;flex-direction:column}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+
+/* HEADER */
+#hdr{background:var(--bg3);border-bottom:1px solid var(--border);padding:14px 16px 0;flex-shrink:0;z-index:10}
+#hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+#app-title{font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#hdr-date{font-size:11px;color:var(--text3);margin-top:1px}
+#streak{background:rgba(255,87,87,0.12);border:1px solid rgba(255,87,87,0.25);border-radius:10px;padding:6px 12px;font-size:12px;color:var(--red);font-weight:700}
+#nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+#nav::-webkit-scrollbar{display:none}
+.nb{padding:10px 13px;border:none;background:transparent;color:var(--text3);font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-family:var(--font);border-radius:10px 10px 0 0;flex-shrink:0}
+.nb.active{color:var(--red);border-bottom-color:var(--red);background:rgba(255,87,87,0.06)}
+
+/* MAIN */
+#main{flex:1;overflow-y:auto;padding:16px;padding-bottom:calc(24px + var(--safe))}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.ct{font-size:15px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ct .ic{font-size:18px}
+
+/* BUTTONS */
+.btn{border:none;border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s}
+.btn:active{transform:scale(0.96)}
+.btn-p{background:linear-gradient(135deg,var(--red),#ff8e53);color:#fff}
+.btn-g{background:rgba(255,255,255,0.06);color:var(--text2);border:1px solid var(--border)}
+.btn-t{background:rgba(0,212,170,0.12);color:var(--teal);border:1px solid rgba(0,212,170,0.25)}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:9px}
+
+/* INPUTS */
+input[type=text],input[type=number],textarea,select{
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;
+  padding:10px 14px;color:var(--text);font-size:14px;font-family:var(--font);
+  outline:none;direction:rtl;transition:border-color .2s;width:100%
+}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,87,87,0.4)}
+select option{background:#1a1a2e}
+textarea{resize:none;min-height:80px;line-height:1.7}
+
+/* CHECK ROW */
+.crow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .2s}
+.crow:last-child{border-bottom:none}
+.crow.done{opacity:.4}
+.cbox{width:22px;height:22px;border-radius:7px;flex-shrink:0;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
+.cbox.ck{background:rgba(0,212,170,0.18);border-color:var(--teal);color:var(--teal)}
+
+/* TAGS */
+.tag{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:700}
+.tr{background:rgba(255,87,87,0.15);color:var(--red)}
+.ty{background:rgba(255,209,102,0.15);color:var(--yellow)}
+.tt{background:rgba(0,212,170,0.15);color:var(--teal)}
+.tb{background:rgba(116,185,255,0.15);color:var(--blue)}
+
+/* STAT GRID */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sc{border-radius:14px;padding:14px;text-align:center;border:1px solid;cursor:pointer;transition:all .2s}
+.sc:active{transform:scale(0.97)}
+.sv{font-size:26px;font-weight:900;margin-bottom:2px}
+.sl{font-size:11px;color:var(--text2)}
+
+/* WATER */
+#wcups{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.cup{width:38px;height:46px;border-radius:0 0 11px 11px;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .2s;background:rgba(255,255,255,0.03)}
+.cup.full{background:linear-gradient(180deg,rgba(116,185,255,0.3),rgba(9,132,227,0.25));border-color:var(--blue)}
+
+/* POMODORO */
+#pring{display:flex;justify-content:center;margin:8px 0}
+#pring svg circle{transition:stroke-dashoffset 1s linear}
+#ptime{font-size:38px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+#plabel{font-size:12px;color:var(--text2);margin-bottom:14px;text-align:center;font-weight:600}
+#pbtns{display:flex;gap:10px;justify-content:center}
+
+/* FOOD DB */
+.fcat{margin-bottom:20px}
+.fcat-title{font-size:13px;font-weight:800;color:var(--yellow);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid rgba(255,209,102,0.2)}
+.fitem{background:rgba(255,255,255,0.03);border-radius:13px;padding:13px;margin-bottom:8px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.fitem.open{border-color:rgba(255,209,102,0.3);background:rgba(255,209,102,0.04)}
+.fname{font-size:14px;font-weight:800;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.fmacros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px}
+.fm{font-size:11px;background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:6px;color:var(--text2)}
+.fm strong{color:var(--text)}
+.ftip{font-size:12px;color:rgba(0,212,170,0.75);line-height:1.6;margin-top:5px;display:none}
+.fitem.open .ftip{display:block}
+.fwarn{font-size:12px;color:rgba(255,87,87,0.75);line-height:1.6;margin-top:4px;display:none}
+.fitem.open .fwarn{display:block}
+
+/* SUBJECTS */
+.subj-card{border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid;cursor:pointer}
+.subj-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.subj-name{font-size:15px;font-weight:800}
+.subj-note{font-size:12px;color:var(--text2);line-height:1.6}
+.subj-acts{display:flex;gap:8px;margin-top:10px}
+
+/* NOTES */
+.ncard{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px;border-right:3px solid}
+.ntop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.ntitle{font-size:14px;font-weight:800}
+.ndate{font-size:10px;color:var(--text3)}
+.nbody{font-size:13px;color:var(--text2);line-height:1.7}
+.del{background:rgba(255,87,87,0.1);border:1px solid rgba(255,87,87,0.2);border-radius:8px;padding:4px 9px;color:var(--red);cursor:pointer;font-size:12px;font-family:var(--font)}
+
+/* ENGLISH */
+.eng-card{background:rgba(116,185,255,0.05);border:1px solid rgba(116,185,255,0.15);border-radius:14px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .2s}
+.eng-card.open{border-color:rgba(116,185,255,0.35);background:rgba(116,185,255,0.08)}
+.eng-word{font-size:20px;font-weight:900;color:var(--blue);margin-bottom:2px;font-family:'DM Serif Display',serif}
+.eng-pron{font-size:12px;color:var(--text3);margin-bottom:8px}
+.eng-ar{font-size:14px;font-weight:700;margin-bottom:6px}
+.eng-ex{font-size:13px;color:var(--text2);font-style:italic;line-height:1.6;display:none;margin-top:8px}
+.eng-card.open .eng-ex{display:block}
+.eng-tip{font-size:12px;color:rgba(0,212,170,0.8);display:none;margin-top:6px}
+.eng-card.open .eng-tip{display:block}
+.phrase-card{background:rgba(162,155,254,0.06);border:1px solid rgba(162,155,254,0.18);border-radius:13px;padding:14px;margin-bottom:10px}
+.phrase-en{font-size:15px;font-weight:800;color:var(--purple);margin-bottom:4px}
+.phrase-ar{font-size:13px;color:var(--text2);margin-bottom:6px}
+.phrase-ex{font-size:12px;color:var(--text3);font-style:italic}
+
+/* MODAL */
+#mov{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;display:none;align-items:flex-end;justify-content:center}
+#mov.open{display:flex}
+#modal{background:#1a1a2e;border-radius:24px 24px 0 0;border:1px solid var(--border);border-bottom:none;padding:22px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;padding-bottom:calc(22px + var(--safe))}
+#mt{font-size:17px;font-weight:800;margin-bottom:16px}
+.mf{margin-bottom:12px}
+.ml{font-size:12px;color:var(--text2);margin-bottom:6px;display:block;font-weight:600}
+.cpick{display:flex;gap:8px;flex-wrap:wrap}
+.cd{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s}
+.cd.sel{border-color:#fff;transform:scale(1.12)}
+
+/* PROG BAR */
+.pb{background:rgba(255,255,255,0.08);border-radius:6px;height:6px;overflow:hidden;margin-top:8px}
+.pf{height:100%;border-radius:6px;transition:width .4s ease}
+
+/* WEEK ROW */
+.wr{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.wr:last-child{border-bottom:none}
+.wd{font-size:12px;font-weight:800;min-width:52px}
+.wl{font-size:13px;color:var(--text2);flex:1}
+
+/* FAB */
+#fab{position:fixed;bottom:calc(22px + var(--safe));left:20px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--red),#ff8e53);border:none;color:#fff;font-size:28px;cursor:pointer;box-shadow:0 8px 28px rgba(255,87,87,0.45);display:none;align-items:center;justify-content:center;z-index:50;transition:all .2s}
+#fab:active{transform:scale(0.9)}
+#fab.show{display:flex}
+
+/* DIVIDER */
+.div{height:1px;background:var(--border);margin:12px 0}
+.tip-box{background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.15);border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,209,102,0.85);line-height:1.7}
+.warn-box{background:rgba(255,87,87,0.06);border:1px solid rgba(255,87,87,0.15);border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(255,87,87,0.85);line-height:1.7}
+.info-box{background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);border-radius:12px;padding:12px 14px;font-size:13px;color:rgba(0,212,170,0.85);line-height:1.7}
+.section-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;margin-top:4px}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page{animation:fadeIn .22s ease}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-top">
+    <div>
+      <div id="app-title">⚡ نظام النجاح</div>
+      <div id="hdr-date"></div>
+    </div>
+    <div id="streak">🔥 <span id="sc">1</span> يوم</div>
+  </div>
+  <div id="nav">
+    <button class="nb active" onclick="go('dash')">🏠 الرئيسية</button>
+    <button class="nb" onclick="go('nutrition')">🥗 التغذية</button>
+    <button class="nb" onclick="go('fitness')">💪 التمارين</button>
+    <button class="nb" onclick="go('study')">📚 الدراسة</button>
+    <button class="nb" onclick="go('subjects')">🎓 موادي</button>
+    <button class="nb" onclick="go('notes')">📝 ملاحظات</button>
+    <button class="nb" onclick="go('english')">🇬🇧 English</button>
+  </div>
+</div>
+
+<div id="main"></div>
+<button id="fab" onclick="openFAB()">+</button>
+
+<div id="mov" onclick="maybeCM(event)">
+  <div id="modal">
+    <div id="mt"></div>
+    <div id="mb"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-p" style="flex:1" onclick="submitModal()">حفظ ✓</button>
+      <button class="btn btn-g" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ HELPERS ══
+const $ = id => document.getElementById(id);
+const today = () => new Date().toISOString().slice(0,10);
+const S = {
+  get:(k,d)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):d}catch{return d}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
+};
+
+// ══ STATE ══
+let page = 'dash';
+let modalCB = null;
+let pomo = {run:false,mode:'work',min:25,sec:0,iv:null};
+
+const st = {
+  tasks:       S.get('tasks',[{id:1,text:'مراجعة محاضرة اليوم',done:false,priority:'high'},{id:2,text:'حل تمارين الدوائر الكهربائية',done:false,priority:'high'},{id:3,text:'تمرين الجسم',done:false,priority:'medium'},{id:4,text:'قراءة ٢٠ دقيقة',done:false,priority:'low'}]),
+  water:       S.get('w_'+today(),0),
+  meals:       S.get('m_'+today(),[]),
+  exDone:      S.get('ex_'+today(),{}),
+  subjects:    S.get('subjects',[{id:1,name:'Java',color:'#ff5757',grade:'',notes:'محاضرة السبت والاثنين'},{id:2,name:'الدوائر الكهربائية',color:'#ffd166',grade:'',notes:'المختبر يوم الأربعاء'}]),
+  notes:       S.get('notes',[]),
+  streak:      S.get('streak',1),
+  lastDay:     S.get('lastDay',''),
+  pomoCycles:  S.get('pc_'+today(),0),
+  engDone:     S.get('ed_'+today(),[]),
+};
+
+function save(k,v){st[k]=v;S.set(k,v)}
+function saveDay(k,v){st[k]=v;S.set(k+'_'+today(),v)}
+
+// ══ STREAK ══
+function initStreak(){
+  const t=today();
+  if(st.lastDay!==t){
+    const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    st.streak=st.lastDay===yest?st.streak+1:1;
+    S.set('streak',st.streak);S.set('lastDay',t);
+  }
+  $('sc').textContent=st.streak;
+}
+
+// ══ DATE HEADER ══
+function setDate(){
+  const d=new Date();
+  const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  $('hdr-date').textContent=`${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// ══ NAV ══
+function go(p){
+  page=p;
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  const map={dash:0,nutrition:1,fitness:2,study:3,subjects:4,notes:5,english:6};
+  document.querySelectorAll('.nb')[map[p]].classList.add('active');
+  if(pomo.iv){clearInterval(pomo.iv);pomo.iv=null;pomo.run=false}
+  const fab=$('fab');
+  fab.classList.toggle('show',['dash','subjects','notes'].includes(p));
+  const pages={dash:pageDash,nutrition:pageNutrition,fitness:pageFitness,study:pageStudy,subjects:pageSubjects,notes:pageNotes,english:pageEnglish};
+  $('main').innerHTML=`<div class="page">${pages[p]()}</div>`;
+  if(p==='study')initPomo();
+}
+
+function openFAB(){
+  if(page==='dash'||page==='subjects')openAddSubject();
+  else if(page==='notes')openAddNote();
+}
+
+// ══════════════════════════════
+// DASHBOARD
+// ══════════════════════════════
+function pageDash(){
+  const doneT=st.tasks.filter(t=>t.done).length;
+  const w=todayWorkout();
+  const doneEx=Object.values(st.exDone).filter(Boolean).length;
+  const tips=['الاتساق أهم من الكمال — تقدم صغير كل يوم يبني إنساناً كبيراً.','النوم هو أقوى أداة تعلم. لا تقلل منه.','جسمك يبني العضلات والذاكرة أثناء النوم، ليس أثناء التمرين أو المذاكرة.','قارن نفسك بنفسك بالأمس فقط.','الماء والنوم والتمرين — ثلاثة أشياء مجانية تغير كل شيء.','طبق شيئاً واحداً تعلمته اليوم. المعرفة بلا تطبيق مجرد معلومة.','إذا كنت تسأل هل أبدأ — فالجواب نعم، ابدأ الآن.'];
+  const tip=tips[new Date().getDay()%tips.length];
+  return `
+  <div class="sg">
+    <div class="sc" style="background:rgba(255,87,87,0.08);border-color:rgba(255,87,87,0.2)" onclick="go('study')">
+      <div class="sv" style="color:var(--red)">${doneT}/${st.tasks.length}</div>
+      <div class="sl">✅ مهام اليوم</div>
+    </div>
+    <div class="sc" style="background:rgba(0,212,170,0.08);border-color:rgba(0,212,170,0.2)" onclick="go('fitness')">
+      <div class="sv" style="color:var(--teal)">${doneEx}/${w.exercises.length}</div>
+      <div class="sl">💪 تمارين اليوم</div>
+    </div>
+    <div class="sc" style="background:rgba(116,185,255,0.08);border-color:rgba(116,185,255,0.2)" onclick="go('nutrition')">
+      <div class="sv" style="color:var(--blue)">${st.water}/8</div>
+      <div class="sl">💧 أكواب ماء</div>
+    </div>
+    <div class="sc" style="background:rgba(255,209,102,0.08);border-color:rgba(255,209,102,0.2)" onclick="go('study')">
+      <div class="sv" style="color:var(--yellow)">${st.pomoCycles}</div>
+      <div class="sl">🍅 دورات بومودورو</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">💡</span> نصيحة اليوم</div>
+    <div class="tip-box">${tip}</div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">✅</span> مهامي اليوم</div>
+    ${renderTasks(true)}
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input type="text" id="qt" placeholder="مهمة جديدة..." style="flex:1" onkeydown="if(event.key==='Enter')addQT()">
+      <button class="btn btn-p" style="padding:10px 16px;font-size:18px" onclick="addQT()">+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">📅</span> تمرين اليوم — ${w.day}</div>
+    <div style="background:${w.color}22;border:1px solid ${w.color}44;border-radius:11px;padding:10px 14px;color:${w.color};font-weight:800;font-size:14px;margin-bottom:12px">${w.label}</div>
+    ${w.exercises.map(e=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:18px">${e.icon}</span>
+        <span style="flex:1;font-size:14px">${e.name}</span>
+        <span style="font-size:12px;color:var(--text3)">${e.sets}</span>
+      </div>`).join('')}
+  </div>
+
+  ${st.subjects.length?`
+  <div class="card">
+    <div class="ct"><span class="ic">🎓</span> موادي الجامعية</div>
+    ${st.subjects.map(s=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="width:10px;height:10px;border-radius:50%;background:${s.color};flex-shrink:0"></div>
+        <span style="font-size:14px;font-weight:700;flex:1">${s.name}</span>
+        ${s.grade?`<span class="tag tt">${s.grade}</span>`:''}
+      </div>`).join('')}
+  </div>`:''}`;
+}
+
+// ══════════════════════════════
+// TASKS
+// ══════════════════════════════
+function renderTasks(compact=false){
+  const pc={high:'var(--red)',medium:'var(--yellow)',low:'var(--teal)'};
+  const pl={high:'عالي',medium:'متوسط',low:'منخفض'};
+  const list=compact?st.tasks.slice(0,6):st.tasks;
+  if(!list.length)return`<div style="text-align:center;color:var(--text3);padding:20px;font-size:14px">لا توجد مهام 🎯</div>`;
+  return list.map(t=>`
+    <div class="crow ${t.done?'done':''}" onclick="toggleTask(${t.id})">
+      <div class="cbox ${t.done?'ck':''}" style="border-color:${pc[t.priority]}">${t.done?'✓':''}</div>
+      <span style="flex:1;font-size:14px;${t.done?'text-decoration:line-through':''}">${t.text}</span>
+      <span class="tag" style="background:${pc[t.priority]}22;color:${pc[t.priority]};margin-left:4px">${pl[t.priority]}</span>
+      ${!compact?`<button class="del" onclick="event.stopPropagation();delTask(${t.id})">×</button>`:''}
+    </div>`).join('');
+}
+function toggleTask(id){st.tasks=st.tasks.map(t=>t.id===id?{...t,done:!t.done}:t);S.set('tasks',st.tasks);go(page)}
+function delTask(id){st.tasks=st.tasks.filter(t=>t.id!==id);S.set('tasks',st.tasks);go(page)}
+function addQT(){const i=$('qt');if(!i||!i.value.trim())return;st.tasks.push({id:Date.now(),text:i.value.trim(),done:false,priority:'medium'});S.set('tasks',st.tasks);go(page)}
+
+// ══════════════════════════════
+// NUTRITION
+// ══════════════════════════════
+const MEALS=[
+  {id:'ftr',time:'الفطور  ٧–٨ص',icon:'☀️',items:['٢ بيضة مسلوقة أو مقلية بزيت زيتون','شريحة خبز أسمر','جبنة قليلة الدسم (٣٠غ)','شاي أو قهوة بدون سكر'],cal:420,tip:'الفطور يرفع مستوى التركيز ٢٥٪ — أثبت ذلك علمياً. لا تتخطاه أبداً.'},
+  {id:'s1',time:'وجبة خفيفة  ١٠ص',icon:'🍎',items:['تفاحة أو موزة متوسطة','مكسرات غير محمصة (٢٠غ — حفنة صغيرة)'],cal:190,tip:'تمنع انهيار السكر في الدم وتبقيك نشيطاً حتى الغداء.'},
+  {id:'lnch',time:'الغداء  ١–٢م',icon:'🍽️',items:['دجاج أو لحم أو بقوليات (١٥٠–٢٠٠غ)','أرز بني أو خبز أسمر (كوب)','سلطة خضراء بدون صوص جاهز','ماء ٢ كوب على الأقل'],cal:680,tip:'أهم وجبة. البروتين يحمي العضلات والكربوهيدرات المعقدة تعطي طاقة تدريجية لساعات.'},
+  {id:'s2',time:'وجبة خفيفة  ٤م',icon:'🥜',items:['زبادي طبيعي (١٥٠غ)','أو ٣–٤ تمرات مع مكسرات'],cal:210,tip:'الوقت المثالي قبل جلسة المذاكرة المسائية. بيشحن الدماغ.'},
+  {id:'dnnr',time:'العشاء  ٧–٨م',icon:'🌙',items:['وجبة خفيفة وهضيمة','بيض أو تونة أو جبنة','خضار مطبوخة أو سلطة','كوب حليب دافئ'],cal:480,tip:'لا تأكل ثقيل قبل النوم بساعتين. الجسم يحتاج يهضم قبل ما ينام ويبدأ ببناء العضلات.'},
+];
+
+// ══ FOOD DATABASE ══ (expert-level, 10yr nutritionist perspective)
+const FOOD_DB=[
+  {cat:'🥚 البروتينات — اللبنة الأساسية',items:[
+    {name:'البيضة الكاملة',cal:'78 سعرة',p:'6غ بروتين',c:'0.6غ كارب',f:'5غ دهن',tip:'أفضل بروتين كامل بالطبيعة — يحتوي على كل الأحماض الأمينية الضرورية. الصفار مليء بفيتامين D وB12 والكولين الضروري لصحة الدماغ. لا تتخلى عنه.',warn:''},
+    {name:'صدر الدجاج (١٠٠غ مطبوخ)',cal:'165 سعرة',p:'31غ بروتين',c:'0غ كارب',f:'3.6غ دهن',tip:'أعلى نسبة بروتين للسعرة الحرارية بين اللحوم. مثالي لبناء العضلات وإنقاص الوزن معاً.',warn:'الطبخ المناسب مهم — الشواء أو الطبخ بالماء أفضل من القلي.'},
+    {name:'التونة المعلبة (بالماء)',cal:'116 سعرة',p:'25غ بروتين',c:'0غ كارب',f:'1غ دهن',tip:'من أرخص وأسهل مصادر البروتين. غني بالأوميغا-3 الضروري لصحة الدماغ والقلب.',warn:'لا تأكل أكثر من ٣ علب بالأسبوع بسبب الزئبق.'},
+    {name:'العدس (كوب مطبوخ)',cal:'230 سعرة',p:'18غ بروتين',c:'40غ كارب',f:'1غ دهن',tip:'بروتين نباتي ممتاز مع ألياف عالية تخلي تحس بالشبع لساعات. رخيص ومتوفر ومغذٍّ جداً.',warn:''},
+    {name:'الزبادي اليوناني (١٥٠غ)',cal:'130 سعرة',p:'17غ بروتين',c:'9غ كارب',f:'0.7غ دهن',tip:'مصدر ممتاز للبروتين والكالسيوم والبروبيوتيك. يحسن الهضم ويقوي المناعة.',warn:'اختر النوع الطبيعي بدون نكهات أو سكر مضاف.'},
+  ]},
+  {cat:'🌾 الكربوهيدرات — وقود الدماغ',items:[
+    {name:'الأرز البني (كوب مطبوخ)',cal:'216 سعرة',p:'5غ بروتين',c:'45غ كارب',f:'1.8غ دهن',tip:'كربوهيدرات معقدة تعطي طاقة تدريجية لساعات بدلاً من ارتفاع وانهيار مفاجئ. ألياف أعلى من الأبيض بكثير.',warn:''},
+    {name:'الشوفان (نصف كوب جاف)',cal:'150 سعرة',p:'5غ بروتين',c:'27غ كارب',f:'3غ دهن',tip:'من أفضل فطور الطلاب. يشبع لساعات، يخفض الكوليسترول، وفيه بيتا-غلوكان يقوي المناعة.',warn:'تجنب الأنواع الجاهزة المحلاة.'},
+    {name:'الموز المتوسط',cal:'105 سعرة',p:'1.3غ بروتين',c:'27غ كارب',f:'0.4غ دهن',tip:'من أفضل وجبات ما قبل التمرين. كربوهيدرات سريعة + بوتاسيوم يمنع تقلص العضلات.',warn:''},
+    {name:'البطاطا الحلوة (١٠٠غ)',cal:'86 سعرة',p:'1.6غ بروتين',c:'20غ كارب',f:'0.1غ دهن',tip:'كربوهيدرات ممتازة مع بيتا-كاروتين وفيتامين A وC. من أفضل الأكلات للطلاب.',warn:''},
+  ]},
+  {cat:'🥑 الدهون الصحية — ضرورة لا رفاهية',items:[
+    {name:'زيت الزيتون البكر (ملعقة كبيرة)',cal:'119 سعرة',p:'0غ',c:'0غ',f:'14غ دهن صحي',tip:'أفضل دهن للطبخ والسلطة. مليء بأوميغا-9 ومضادات الأكسدة. يحمي القلب ويقلل الالتهابات.',warn:''},
+    {name:'المكسرات المشكلة (٣٠غ — حفنة)',cal:'173 سعرة',p:'5غ بروتين',c:'6غ كارب',f:'16غ دهن صحي',tip:'من أفضل الوجبات الخفيفة. دهون صحية + بروتين + ألياف = شبع طويل وتركيز أفضل.',warn:'سهل الإفراط فيها — القياس بالحفنة وليس بالعلبة!'},
+    {name:'الأفوكادو (نصف حبة)',cal:'120 سعرة',p:'1.5غ',c:'6غ كارب',f:'11غ دهن صحي',tip:'مليء بالبوتاسيوم أكثر من الموز، ودهون أحادية غير مشبعة تغذي الدماغ مباشرة.',warn:''},
+  ]},
+  {cat:'🥦 الخضروات — الدرع الواقية',items:[
+    {name:'البروكلي (كوب)',cal:'31 سعرة',p:'2.6غ',c:'6غ',f:'0.3غ',tip:'من أكثر الخضروات كثافة غذائية. فيتامين C أكثر من البرتقال، وفيتامين K، وكالسيوم، ومضادات سرطان.',warn:''},
+    {name:'السبانخ (كوب طازج)',cal:'7 سعرات',p:'0.9غ',c:'1.1غ',f:'0.1غ',tip:'الحديد والمغنيزيوم فيه يقويان الطاقة والتركيز. أضفه للبيض أو السلطة.',warn:''},
+    {name:'الطماطم (حبة متوسطة)',cal:'22 سعرة',p:'1غ',c:'4.8غ',f:'0.2غ',tip:'الليكوبين فيها يحمي القلب ويقلل الالتهابات. أكلها طازجة أو مطبوخة كلاهما مفيد.',warn:''},
+  ]},
+  {cat:'🚫 تجنب هذا تماماً',items:[
+    {name:'مشروبات الطاقة',cal:'حسب الحجم',p:'-',c:'سكر عالي جداً',f:'-',tip:'',warn:'ترفع الكافيين والسكر مؤقتاً ثم ينهار جسمك. تضر القلب والنوم والتركيز على المدى البعيد. لا تلمسها.'},
+    {name:'الأكل المقلي المتكرر',cal:'سعرات عالية جداً',p:'-',c:'-',f:'دهون متحولة ضارة',tip:'',warn:'الدهون المتحولة في الأكل المقلي تضر الدماغ وتزيد الالتهابات وتسبب نعاس حاد بعد الأكل.'},
+    {name:'المشروبات الغازية والعصائر الصناعية',cal:'١٥٠+ سعرة فارغة',p:'-',c:'سكر صناعي',f:'-',tip:'',warn:'سكريات سريعة بلا أي قيمة غذائية. تخرب مستوى الإنسولين وتسبب تعب مزمن.'},
+    {name:'الوجبات السريعة كوجبة رئيسية يومية',cal:'٨٠٠-١٢٠٠ سعرة',p:'-',c:'دهون + كارب سيء',f:'دهون متحولة',tip:'',warn:'مشكلتها ليست السعرات فقط — هي نقص كامل في المغذيات الضرورية لدماغك. أكلة كل أسبوع لا بأس، يومياً = كارثة.'},
+  ]},
+];
+
+function pageNutrition(){
+  const totalCal=MEALS.reduce((a,m)=>a+m.cal,0);
+  return `
+  <div class="card">
+    <div class="ct"><span class="ic">💧</span> هدف الماء اليومي</div>
+    <div style="text-align:center;color:var(--text2);font-size:12px;margin-bottom:4px">٨ أكواب (٢ لتر) — الهدف الأدنى لطالب يذاكر</div>
+    <div id="wcups">${[...Array(8)].map((_,i)=>`<div class="cup ${i<st.water?'full':''}" onclick="setWater(${i+1})">${i<st.water?'💧':''}</div>`).join('')}</div>
+    <div style="text-align:center;font-size:13px;color:${st.water>=8?'var(--teal)':'var(--text2)'};font-weight:600">${st.water}/8 ${st.water>=8?'✅ ممتاز!':''}</div>
+    ${st.water>0?`<div style="text-align:center;margin-top:8px"><button class="btn btn-g btn-sm" onclick="setWater(0)">إعادة تعيين</button></div>`:''}
+    <div class="div"></div>
+    <div class="info-box" style="font-size:12px">⚠️ الجفاف الخفيف (أقل من ١٪ من وزنك) يقلل التركيز والذاكرة وسرعة التفكير بشكل ملحوظ. قبل ما تشرب قهوة — اشرب ماء.</div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">🍽️</span> خطة وجبات اليوم</div>
+    <div style="color:var(--text3);font-size:12px;margin-bottom:14px">إجمالي السعرات التقريبي: ~${totalCal} سعرة</div>
+    ${MEALS.map(m=>`
+      <div onclick="toggleMeal('${m.id}')" style="display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;opacity:${st.meals.includes(m.id)?'0.45':'1'};transition:opacity .2s">
+        <div style="width:44px;height:44px;border-radius:12px;background:${st.meals.includes(m.id)?'rgba(0,212,170,0.18)':'rgba(255,255,255,0.05)'};border:1px solid ${st.meals.includes(m.id)?'var(--teal)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">
+          ${st.meals.includes(m.id)?'✅':m.icon}
+        </div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:800">${m.time}</span>
+            <span style="font-size:11px;color:var(--yellow);font-weight:700">${m.cal} سعرة</span>
+          </div>
+          <div style="color:var(--text2);font-size:12px;margin-bottom:5px">${m.items.join(' • ')}</div>
+          <div style="background:rgba(255,209,102,0.07);border-radius:8px;padding:4px 8px;color:rgba(255,209,102,0.75);font-size:11px">💡 ${m.tip}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">📚</span> قاعدة معلومات التغذية</div>
+    <div style="color:var(--text2);font-size:12px;margin-bottom:14px">اضغط على أي عنصر لمعرفة تفاصيله — معلومات من خبير تغذية</div>
+    ${FOOD_DB.map(cat=>`
+      <div class="fcat">
+        <div class="fcat-title">${cat.cat}</div>
+        ${cat.items.map((f,i)=>`
+          <div class="fitem" onclick="this.classList.toggle('open')" id="fi_${cat.cat.slice(0,3)}_${i}">
+            <div class="fname">
+              <span>${f.name}</span>
+              <span style="font-size:12px;color:var(--text3)">▾</span>
+            </div>
+            <div class="fmacros">
+              <span class="fm">🔥 <strong>${f.cal}</strong></span>
+              ${f.p?`<span class="fm">💪 <strong>${f.p}</strong></span>`:''}
+              ${f.c?`<span class="fm">🌾 <strong>${f.c}</strong></span>`:''}
+              ${f.f?`<span class="fm">🫐 <strong>${f.f}</strong></span>`:''}
+            </div>
+            ${f.tip?`<div class="ftip">✅ ${f.tip}</div>`:''}
+            ${f.warn?`<div class="fwarn">⚠️ ${f.warn}</div>`:''}
+          </div>`).join('')}
+      </div>`).join('')}
+  </div>`;
+}
+function setWater(n){saveDay('water',n);go('nutrition')}
+function toggleMeal(id){
+  const m=st.meals.includes(id)?st.meals.filter(x=>x!==id):[...st.meals,id];
+  saveDay('meals',m);go('nutrition');
+}
+
+// ══════════════════════════════
+// FITNESS
+// ══════════════════════════════
+const WORKOUTS=[
+  {day:'السبت',label:'صدر + ترايسبس',color:'#ff5757',exercises:[
+    {name:'ضغط أرضي كلاسيكي',sets:'4 × 15',rest:'٦٠ ث',icon:'🔥',note:'ظهرك مستقيم، نزل حتى صدرك يلمس الأرض تقريباً'},
+    {name:'ضغط ترايسبس ضيق',sets:'3 × 12',rest:'٦٠ ث',icon:'💥',note:'يداك بعرض الكتف أو أضيق'},
+    {name:'ضغط إلى أعلى (Pike Push)',sets:'3 × 10',rest:'٦٠ ث',icon:'⬆️',note:'شكل مثلث بجسمك، يركز على الكتف'},
+    {name:'بلانك',sets:'3 × 45 ثانية',rest:'٣٠ ث',icon:'⚡',note:'جسمك خط مستقيم، لا ترفع مؤخرتك'},
+  ]},
+  {day:'الأحد',label:'ظهر + بايسبس',color:'#00d4aa',exercises:[
+    {name:'عقلة (أو ضغط واسع إلى الخلف)',sets:'4 × 6-8',rest:'٩٠ ث',icon:'💪',note:'إذا ما قدرت عقلة، ضغط واسع مع شد الكوعين للخلف'},
+    {name:'سوبرمان',sets:'3 × 15',rest:'٤٥ ث',icon:'🦸',note:'استلقِ على بطنك وارفع يديك وقدميك معاً'},
+    {name:'كيرل بدون وزن (إطالة)',sets:'3 × 12',rest:'٦٠ ث',icon:'💪',note:'استخدم وزن حقيبة أو أي غرض ثقيل'},
+  ]},
+  {day:'الاثنين',label:'أرجل + كور',color:'#ffd166',exercises:[
+    {name:'سكوات',sets:'4 × 20',rest:'٦٠ ث',icon:'🦵',note:'ظهرك مستقيم، ركبتك لا تتجاوز أصابع قدمك'},
+    {name:'لانج',sets:'3 × 12 لكل رجل',rest:'٦٠ ث',icon:'⚡',note:'خطوة واسعة للأمام، ركبتك الخلفية تقترب من الأرض'},
+    {name:'سكوات قفز',sets:'3 × 10',rest:'٦٠ ث',icon:'🔥',note:'نفس السكوات لكن اقفز عند الصعود — للقوة والقلب'},
+    {name:'كرانش',sets:'4 × 20',rest:'٤٥ ث',icon:'🎯',note:'لا ترفع رقبتك بيديك، الحركة من البطن'},
+    {name:'ليغ ريز',sets:'3 × 15',rest:'٤٥ ث',icon:'⬆️',note:'مستلقٍ، ارفع رجليك مستقيمتين لـ٩٠ درجة'},
+  ]},
+  {day:'الثلاثاء',label:'راحة نشيطة',color:'#a8e6cf',exercises:[
+    {name:'مشي سريع',sets:'٣٠–٤٥ دقيقة',rest:'-',icon:'🚶',note:'مشي خارج البيت يحسن المزاج والتركيز'},
+    {name:'تمدد كامل للجسم',sets:'١٥ دقيقة',rest:'-',icon:'🧘',note:'ركز على العضلات المؤلمة من أمس'},
+  ]},
+  {day:'الأربعاء',label:'كتف + تريب',color:'#fd9644',exercises:[
+    {name:'ضغط عسكري',sets:'4 × 12',rest:'٦٠ ث',icon:'💥',note:'يداك فوق رأسك عند الصعود'},
+    {name:'رفع جانبي بوزن',sets:'3 × 15',rest:'٤٥ ث',icon:'🔥',note:'استخدم زجاجة ماء ممتلئة كبديل للدمبل'},
+    {name:'ضغط ترايسبس على كرسي',sets:'3 × 15',rest:'٦٠ ث',icon:'⚡',note:'يداك خلفك على الكرسي، جسمك في الهواء'},
+  ]},
+  {day:'الخميس',label:'تكامل + قلب',color:'#c3a6ff',exercises:[
+    {name:'بيربي',sets:'3 × 8',rest:'٩٠ ث',icon:'🔥',note:'أصعب تمرين وأفضله — يحرق دهون ويبني قوة معاً'},
+    {name:'ماونتن كلايمبر',sets:'3 × 30 ثانية',rest:'٤٥ ث',icon:'⛰️',note:'كأنك تركض وأنت في وضع الضغط'},
+    {name:'ضغط متنوع + سكوات',sets:'٣ جولات × ١٠',rest:'٦٠ ث',icon:'💪',note:'١٠ ضغط ثم ١٠ سكوات مباشرة'},
+  ]},
+  {day:'الجمعة',label:'راحة كاملة 🌙',color:'#87ceeb',exercises:[
+    {name:'نوم مبكر إلزامي',sets:'٧-٨ ساعات',rest:'-',icon:'😴',note:'الجسم يبني العضلات ويرسخ الذاكرة أثناء النوم'},
+    {name:'لا شاشات قبل النوم بساعة',sets:'إلزامي',rest:'-',icon:'📵',note:'الضوء الأزرق يمنع إفراز الميلاتونين'},
+  ]},
+];
+
+function todayWorkout(){
+  const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  return WORKOUTS.find(w=>w.day===days[new Date().getDay()])||WORKOUTS[0];
+}
+
+function pageFitness(){
+  const w=todayWorkout();
+  const doneEx=Object.keys(st.exDone).filter(k=>st.exDone[k]).length;
+  return `
+  <div class="card">
+    <div class="ct"><span class="ic">📅</span> برنامج الأسبوع</div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none">
+      ${WORKOUTS.map(wk=>`
+        <div style="flex-shrink:0;text-align:center;padding:10px 12px;border-radius:11px;background:${wk.day===w.day?wk.color+'22':'rgba(255,255,255,0.03)'};border:1px solid ${wk.day===w.day?wk.color:'var(--border)'}">
+          <div style="font-size:12px;color:${wk.day===w.day?wk.color:'var(--text3)'};font-weight:800">${wk.day}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px;max-width:65px">${wk.label}</div>
+        </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">💪</span> تمارين اليوم — <span style="color:${w.color}">${w.label}</span></div>
+    <div style="color:var(--text3);font-size:12px;margin-bottom:12px">منجز ${doneEx} من ${w.exercises.length} تمارين</div>
+    <div class="pb" style="margin-bottom:14px"><div class="pf" style="width:${w.exercises.length?doneEx/w.exercises.length*100:0}%;background:${w.color}"></div></div>
+    ${w.exercises.map((ex,i)=>`
+      <div class="crow ${st.exDone[ex.name]?'done':''}" onclick="toggleEx('${ex.name.replace(/'/g,"\\'")}')">
+        <div class="cbox ${st.exDone[ex.name]?'ck':''}" style="border-color:${w.color}">${st.exDone[ex.name]?'✓':''}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700">${ex.icon} ${ex.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">${ex.sets} · راحة: ${ex.rest}</div>
+          <div style="font-size:11px;color:rgba(255,209,102,0.65);margin-top:3px">${ex.note}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">📋</span> قواعد التمرين الصحيح</div>
+    ${[
+      ['🔥','إحمِ دائماً','٥-٧ دقايق إحماء قبل أي تمرين — تمنع الإصابات وترفع الأداء'],
+      ['💧','اشرب الماء','كوب قبل وأثناء وبعد التمرين. الجفاف يقلل القوة ٢٠٪'],
+      ['😴','النوم = النتيجة','العضلات تنمو أثناء النوم. تمرين بلا نوم كافٍ = مضيعة وقت'],
+      ['📈','زِد التدريج','كل أسبوع زد تكرار أو مجموعة. جسمك يتكيف بسرعة'],
+      ['🗓️','الانتظام فوق كل شيء','٣-٤ أيام منتظمة أفضل بكثير من ٧ أيام لأسبوع وتوقف'],
+    ].map(([i,t,d])=>`
+      <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:22px">${i}</span>
+        <div><div style="font-size:14px;font-weight:700">${t}</div><div style="font-size:12px;color:var(--text2);margin-top:2px">${d}</div></div>
+      </div>`).join('')}
+  </div>`;
+}
+function toggleEx(name){
+  const e={...st.exDone,[name]:!st.exDone[name]};
+  saveDay('exDone',e);go('fitness');
+}
+
+// ══════════════════════════════
+// STUDY
+// ══════════════════════════════
+function pageStudy(){
+  return `
+  <div class="card">
+    <div class="ct"><span class="ic">🍅</span> مؤقت بومودورو</div>
+    <div style="text-align:center">
+      <div id="pring">
+        <div style="position:relative;width:150px;height:150px">
+          <svg width="150" height="150" style="transform:rotate(-90deg)">
+            <circle cx="75" cy="75" r="64" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+            <circle id="pcirc" cx="75" cy="75" r="64" fill="none" stroke="var(--red)" stroke-width="9" stroke-dasharray="${2*Math.PI*64}" stroke-dashoffset="${2*Math.PI*64}" stroke-linecap="round"/>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+            <div id="ptime">25:00</div>
+            <div style="font-size:10px;color:var(--text3);font-weight:600">دقيقة:ثانية</div>
+          </div>
+        </div>
+      </div>
+      <div id="plabel">⚡ وقت التركيز</div>
+      <div style="color:var(--text3);font-size:12px;margin-bottom:14px">دورات مكتملة اليوم: <span style="color:var(--yellow);font-weight:700">${st.pomoCycles}</span></div>
+      <div id="pbtns">
+        <button class="btn btn-p" id="pbtn" onclick="togglePomo()">▶ ابدأ</button>
+        <button class="btn btn-g" onclick="resetPomo()">↺ إعادة</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">✅</span> مهامي — إدارة كاملة</div>
+    ${renderTasks(false)}
+    <div style="margin-top:14px">
+      <div class="section-label">إضافة مهمة جديدة</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input type="text" id="nt" placeholder="نص المهمة...">
+        <div style="display:flex;gap:8px">
+          <select id="np" style="flex:1">
+            <option value="high">🔴 أولوية عالية</option>
+            <option value="medium" selected>🟡 أولوية متوسطة</option>
+            <option value="low">🟢 أولوية منخفضة</option>
+          </select>
+          <button class="btn btn-p" onclick="addTask()">إضافة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">🧠</span> تقنيات المذاكرة الفعّالة</div>
+    ${[
+      ['🍅','Pomodoro','٢٥ دقيقة تركيز كامل ← ٥ دقيقة راحة. لا جوال، لا أي شيء. الدماغ يحتاج حدوداً واضحة.'],
+      ['🔁','Active Recall','بعد ما تقرأ — أغلق الكتاب واكتب كل شيء تتذكره. أقوى طريقة مذاكرة موجودة.'],
+      ['⏰','Spaced Repetition','راجع بعد ١ يوم، ٣ أيام، أسبوع، شهر. هكذا يصبح الحفظ دائماً.'],
+      ['📝','Feynman Technique','اشرح الموضوع كأنك تعلم طفلاً. إذا تعثرت — هذا بالضبط ما لم تفهمه.'],
+      ['📵','محيط المذاكرة','الجوال خارج الغرفة تماماً. الإشعارات مقطوعة. الدماغ لا يستطيع التركيز والانتباه للإشعارات في آن واحد.'],
+      ['🌙','النوم = مذاكرة','الدماغ يرسخ ما تعلمته أثناء النوم. المذاكرة ليلاً متأخراً على حساب النوم عكسية تماماً.'],
+    ].map(([i,t,d])=>`
+      <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:14px;font-weight:800;margin-bottom:4px">${i} ${t}</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">${d}</div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">🕐</span> جدول اليوم المقترح</div>
+    ${[
+      ['٦:٣٠ص','الاستيقاظ + ماء + تمدد','لا جوال أول ٣٠ دقيقة — ابدأ يومك بهدوء','var(--teal)'],
+      ['٧:٠٠ص','الفطور','لا تتخطاه مهما كان','var(--yellow)'],
+      ['٨:٠٠-١٠:٠٠ص','جلسة مذاكرة ١','أصعب مادة وأنت في أفضل حالاتك','var(--red)'],
+      ['١٠:٠٠-١٠:١٥ص','راحة نشيطة','مشي أو تمدد — لا جوال','var(--text3)'],
+      ['١٠:١٥-١٢:٠٠م','جلسة مذاكرة ٢','مراجعة أو حل تمارين','var(--red)'],
+      ['١٢:٠٠-٤:٠٠م','غداء + قيلولة + تمرين','حق جسمك وعقلك','var(--teal)'],
+      ['٤:٠٠-٦:٠٠م','جلسة مذاكرة ٣','مراجعة ما درسته اليوم','var(--red)'],
+      ['٩:٠٠-١٠:٠٠م','قراءة حرة أو تطوير ذاتي','كتاب أو مقالة في مجالك','var(--blue)'],
+      ['١٠:٣٠م','نوم إلزامي','لا جوال، لا شاشات. غرفة مظلمة وهادئة','var(--purple)'],
+    ].map(([t,l,n,c])=>`
+      <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start">
+        <span style="font-size:11px;color:${c};font-weight:700;min-width:70px;padding-top:2px">${t}</span>
+        <div><div style="font-size:13px;font-weight:700">${l}</div><div style="font-size:11px;color:var(--text3)">${n}</div></div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function addTask(){
+  const t=$('nt'),p=$('np');
+  if(!t||!t.value.trim())return;
+  st.tasks.push({id:Date.now(),text:t.value.trim(),done:false,priority:p?p.value:'medium'});
+  S.set('tasks',st.tasks);go('study');
+}
+
+// ══ POMODORO ══
+function initPomo(){
+  updatePomoUI();
+}
+function updatePomoUI(){
+  const c=$('pcirc'),tm=$('ptime'),lb=$('plabel'),pb=$('pbtn');
+  if(!c)return;
+  const total=pomo.mode==='work'?25*60:5*60;
+  const elapsed=total-(pomo.min*60+pomo.sec);
+  const circ=2*Math.PI*64;
+  c.style.strokeDashoffset=circ*(1-elapsed/total);
+  c.style.stroke=pomo.mode==='work'?'var(--red)':'var(--teal)';
+  tm.textContent=`${String(pomo.min).padStart(2,'0')}:${String(pomo.sec).padStart(2,'0')}`;
+  lb.textContent=pomo.mode==='work'?'⚡ وقت التركيز':'☕ وقت الراحة';
+  if(pb)pb.textContent=pomo.run?'⏸ إيقاف':'▶ ابدأ';
+}
+function togglePomo(){
+  if(pomo.run){clearInterval(pomo.iv);pomo.iv=null;pomo.run=false;updatePomoUI();return}
+  pomo.run=true;
+  pomo.iv=setInterval(()=>{
+    if(pomo.sec>0)pomo.sec--;
+    else if(pomo.min>0){pomo.min--;pomo.sec=59}
+    else{
+      clearInterval(pomo.iv);pomo.run=false;
+      if(pomo.mode==='work'){
+        const c=st.pomoCycles+1;saveDay('pomoCycles',c);
+        pomo.mode='break';pomo.min=5;pomo.sec=0;
+      }else{pomo.mode='work';pomo.min=25;pomo.sec=0}
+    }
+    updatePomoUI();
+  },1000);
+  updatePomoUI();
+}
+function resetPomo(){
+  clearInterval(pomo.iv);pomo.iv=null;pomo.run=false;
+  pomo.mode='work';pomo.min=25;pomo.sec=0;updatePomoUI();
+}
+
+// ══════════════════════════════
+// SUBJECTS
+// ══════════════════════════════
+const COLORS=['#ff5757','#ffd166','#00d4aa','#74b9ff','#a29bfe','#fd9644','#00cec9','#fd79a8'];
+
+function pageSubjects(){
+  return `
+  <div style="color:var(--text2);font-size:13px;margin-bottom:14px">اضغط على + لإضافة مادة جديدة</div>
+  ${st.subjects.length===0?`<div class="card" style="text-align:center;color:var(--text3);padding:30px">لا توجد مواد بعد<br>اضغط + لإضافة مادتك الأولى</div>`:''}
+  ${st.subjects.map(s=>`
+    <div class="subj-card" style="background:${s.color}0d;border-color:${s.color}33">
+      <div class="subj-h">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:12px;height:12px;border-radius:50%;background:${s.color}"></div>
+          <span class="subj-name" style="color:${s.color}">${s.name}</span>
+        </div>
+        ${s.grade?`<span class="tag" style="background:${s.color}22;color:${s.color}">${s.grade}</span>`:''}
+      </div>
+      ${s.notes?`<div class="subj-note">${s.notes}</div>`:''}
+      <div class="subj-acts">
+        <button onclick="editSubject(${s.id})" style="color:${s.color};border-color:${s.color}33;background:${s.color}11">✏️ تعديل</button>
+        <button onclick="deleteSubject(${s.id})" style="color:var(--red);border-color:rgba(255,87,87,0.2);background:rgba(255,87,87,0.08)">🗑 حذف</button>
+      </div>
+    </div>`).join('')}`;
+}
+
+function openAddSubject(id=null){
+  const s=id?st.subjects.find(x=>x.id===id):null;
+  $('mt').textContent=s?'تعديل المادة':'إضافة مادة جديدة';
+  $('mb').innerHTML=`
+    <div class="mf"><label class="ml">اسم المادة</label><input type="text" id="sn" placeholder="مثال: رياضيات، Java..." value="${s?s.name:''}"></div>
+    <div class="mf"><label class="ml">الدرجة / التقدير (اختياري)</label><input type="text" id="sg" placeholder="مثال: A، ٩٠٪، ممتاز..." value="${s?s.grade:''}"></div>
+    <div class="mf"><label class="ml">ملاحظات</label><textarea id="snt" placeholder="مواعيد المحاضرات، الدكتور، تذكيرات...">${s?s.notes:''}</textarea></div>
+    <div class="mf"><label class="ml">اللون</label>
+      <div class="cpick">${COLORS.map(c=>`<div class="cd ${(s?s.color:COLORS[0])===c?'sel':''}" style="background:${c}" onclick="selColor(this,'${c}')"></div>`).join('')}</div>
+    </div>`;
+  modalCB=()=>{
+    const name=$('sn').value.trim();
+    if(!name)return alert('أدخل اسم المادة');
+    const color=document.querySelector('.cd.sel')?.style.background||COLORS[0];
+    if(s){
+      st.subjects=st.subjects.map(x=>x.id===s.id?{...x,name,grade:$('sg').value.trim(),notes:$('snt').value.trim(),color}:x);
+    }else{
+      st.subjects.push({id:Date.now(),name,color,grade:$('sg').value.trim(),notes:$('snt').value.trim()});
+    }
+    S.set('subjects',st.subjects);closeModal();go('subjects');
+  };
+  $('mov').classList.add('open');
+}
+function selColor(el,c){document.querySelectorAll('.cd').forEach(d=>d.classList.remove('sel'));el.classList.add('sel')}
+function editSubject(id){openAddSubject(id)}
+function deleteSubject(id){if(confirm('حذف المادة؟')){st.subjects=st.subjects.filter(s=>s.id!==id);S.set('subjects',st.subjects);go('subjects')}}
+
+// ══════════════════════════════
+// NOTES
+// ══════════════════════════════
+const NOTE_TAGS=['📚 دراسة','💡 فكرة','⚠️ تذكير','🎯 هدف','💪 تحفيز','🥗 تغذية'];
+const NOTE_COLORS=['var(--red)','var(--teal)','var(--yellow)','var(--blue)','var(--purple)','var(--orange)'];
+
+function pageNotes(){
+  return `
+  <div style="color:var(--text2);font-size:13px;margin-bottom:14px">اضغط + لإضافة ملاحظة جديدة</div>
+  ${st.notes.length===0?`<div class="card" style="text-align:center;color:var(--text3);padding:30px">لا توجد ملاحظات بعد<br>اضغط + لإضافة أول ملاحظة</div>`:''}
+  ${[...st.notes].reverse().map(n=>`
+    <div class="ncard" style="border-right-color:${n.color||'var(--red)'}">
+      <div class="ntop">
+        <div>
+          <div class="ntitle">${n.title}</div>
+          <div class="ndate">${n.date}</div>
+        </div>
+        <button class="del" onclick="deleteNote(${n.id})">×</button>
+      </div>
+      <div class="nbody">${n.body.replace(/\n/g,'<br>')}</div>
+      ${n.tag?`<div class="note-tag"><span class="tag" style="background:${n.color}22;color:${n.color}">${n.tag}</span></div>`:''}
+    </div>`).join('')}`;
+}
+
+function openAddNote(){
+  $('mt').textContent='ملاحظة جديدة';
+  $('mb').innerHTML=`
+    <div class="mf"><label class="ml">العنوان</label><input type="text" id="nn" placeholder="عنوان الملاحظة..."></div>
+    <div class="mf"><label class="ml">المحتوى</label><textarea id="nb" placeholder="اكتب ملاحظتك هنا..."></textarea></div>
+    <div class="mf"><label class="ml">التصنيف</label>
+      <select id="ntag"><option value="">بدون تصنيف</option>${NOTE_TAGS.map((t,i)=>`<option value="${t}" data-c="${NOTE_COLORS[i]}">${t}</option>`).join('')}</select>
+    </div>`;
+  modalCB=()=>{
+    const title=$('nn').value.trim();
+    if(!title)return alert('أدخل عنواناً');
+    const tagEl=$('ntag');
+    const tag=tagEl.value;
+    const color=tagEl.selectedIndex>0?NOTE_COLORS[tagEl.selectedIndex-1]:'var(--red)';
+    const d=new Date();
+    st.notes.push({id:Date.now(),title,body:$('nb').value.trim(),tag,color,date:`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`});
+    S.set('notes',st.notes);closeModal();go('notes');
+  };
+  $('mov').classList.add('open');
+}
+function deleteNote(id){if(confirm('حذف الملاحظة؟')){st.notes=st.notes.filter(n=>n.id!==id);S.set('notes',st.notes);go('notes')}}
+
+// ══════════════════════════════
+// ENGLISH
+// ══════════════════════════════
+const ENG_WORDS=[
+  {word:'Discipline',pron:'/ˈdɪs.ɪ.plɪn/',ar:'الانضباط / الإرادة',ex:'Discipline is doing what needs to be done, even when you don\'t feel like it.',tip:'أهم صفة للنجاح. الفرق بين الناجح والفاشل ليس الموهبة — هو الانضباط اليومي.'},
+  {word:'Consistency',pron:'/kənˈsɪs.tən.si/',ar:'الاتساق / الاستمرارية',ex:'Consistency over months beats intensity over weeks.',tip:'من أكثر الكلمات استخداماً في مجال التطوير الذاتي.'},
+  {word:'Procrastination',pron:'/prəˌkræs.tɪˈneɪ.ʃən/',ar:'التسويف / التأجيل',ex:'Procrastination is the thief of time.',tip:'كلمة طويلة لكن لازم تعرفها — ستسمعها كثيراً في الجامعة والعمل.'},
+  {word:'Resilience',pron:'/rɪˈzɪl.i.əns/',ar:'المرونة / القدرة على التعافي',ex:'Resilience is not about avoiding failure, but bouncing back from it.',tip:'من أكثر الكلمات طلباً في مقابلات العمل. اعرف كيف تستخدمها.'},
+  {word:'Nutrition',pron:'/njuːˈtrɪʃ.ən/',ar:'التغذية',ex:'Proper nutrition is the foundation of physical and mental performance.',tip:'مفيدة جداً لأنك تستخدمها يومياً في هذا التطبيق!'},
+  {word:'Momentum',pron:'/məˈmen.təm/',ar:'الزخم / القوة المتراكمة',ex:'Once you build momentum, it becomes easier to keep going.',tip:'من أجمل الكلمات الإنجليزية. الزخم: كل يوم صغير يبني يوماً أكبر.'},
+  {word:'Algorithm',pron:'/ˈæl.ɡə.rɪ.ðəm/',ar:'خوارزمية',ex:'A sorting algorithm organizes data in a specific order.',tip:'كلمة أساسية في دراستك كمعلوماتية. ستسمعها مئات المرات.'},
+  {word:'Debugging',pron:'/diːˈbʌɡ.ɪŋ/',ar:'إزالة الأخطاء البرمجية',ex:'I spent two hours debugging this Java code.',tip:'مهارة أساسية في البرمجة. "نصف وقت المبرمج debugging"!'},
+  {word:'Variable',pron:'/ˈveər.i.ə.bəl/',ar:'متغير',ex:'In Java, you must declare a variable type before using it.',tip:'أول كلمة تتعلمها في أي لغة برمجة.'},
+  {word:'Implementation',pron:'/ˌɪm.plɪ.menˈteɪ.ʃən/',ar:'التطبيق / التنفيذ',ex:'The implementation of this feature took three days.',tip:'شائعة جداً في البرمجة والهندسة. اعرف كيف تنطقها صح.'},
+  {word:'Threshold',pron:'/ˈθreʃ.həʊld/',ar:'العتبة / الحد الأدنى',ex:'Your pain threshold increases with regular exercise.',tip:'تُستخدم في التغذية والتمارين والبرمجة. كلمة متعددة الاستخدام.'},
+  {word:'Metabolism',pron:'/məˈtæb.ə.lɪ.z əm/',ar:'الأيض / الحرق',ex:'Exercise boosts your metabolism for hours after you finish.',tip:'أساسية في فهم التغذية والصحة. اعرف معناها.'},
+];
+
+const ENG_PHRASES=[
+  {en:'Can you explain that again?',ar:'ممكن تشرح هذا مرة أخرى؟',ex:'— Useful in lectures and presentations.',icon:'🎓'},
+  {en:'I\'m struggling with this concept.',ar:'أنا أجد صعوبة في فهم هذا المفهوم.',ex:'— Honest and professional way to ask for help.',icon:'💭'},
+  {en:'Let me think about it.',ar:'دعني أفكر في الأمر.',ex:'— Don\'t rush. Take time to think before answering.',icon:'🤔'},
+  {en:'Could you clarify what you mean?',ar:'هل يمكنك توضيح ما تقصد؟',ex:'— Better than pretending you understood.',icon:'❓'},
+  {en:'I\'m working on improving my skills.',ar:'أنا أعمل على تطوير مهاراتي.',ex:'— Great for interviews and professional conversations.',icon:'📈'},
+  {en:'That makes a lot of sense.',ar:'هذا منطقي جداً.',ex:'— Shows you\'re engaged and understanding.',icon:'💡'},
+  {en:'I appreciate your feedback.',ar:'أقدر ملاحظاتك / شكراً على رأيك.',ex:'— Professional response to criticism.',icon:'🙏'},
+  {en:'I\'d like to follow up on this.',ar:'أريد متابعة هذا الموضوع.',ex:'— Used in emails and professional settings.',icon:'📧'},
+];
+
+function pageEnglish(){
+  return `
+  <div class="card" style="background:rgba(116,185,255,0.05);border-color:rgba(116,185,255,0.15)">
+    <div class="ct" style="color:var(--blue)"><span class="ic">🇬🇧</span> تعلم الإنجليزية يومياً</div>
+    <div class="info-box" style="font-size:12px">
+      💡 <strong>نصيحة الخبراء:</strong> تعلم ٥ كلمات يومياً = ١٨٢٥ كلمة بالسنة. معظم المحادثات اليومية تستخدم أقل من ٣٠٠٠ كلمة. أنت أقرب مما تظن.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">📖</span> كلمات أساسية لطالب معلوماتية</div>
+    <div style="color:var(--text2);font-size:12px;margin-bottom:14px">اضغط على أي كلمة لتفاصيلها وجملة مثال</div>
+    ${ENG_WORDS.map((w,i)=>`
+      <div class="eng-card" onclick="this.classList.toggle('open')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="eng-word">${w.word}</div>
+            <div class="eng-pron">${w.pron}</div>
+            <div class="eng-ar">${w.ar}</div>
+          </div>
+          <span style="color:var(--text3);font-size:14px">▾</span>
+        </div>
+        <div class="eng-ex">
+          <div style="color:var(--blue);margin-bottom:4px;font-size:13px">"${w.ex}"</div>
+          <div class="eng-tip">💡 ${w.tip}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">💬</span> جمل عملية للحياة الجامعية</div>
+    <div style="color:var(--text2);font-size:12px;margin-bottom:14px">جمل جاهزة الاستخدام في المحاضرات والمواقف اليومية</div>
+    ${ENG_PHRASES.map(p=>`
+      <div class="phrase-card">
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="font-size:20px">${p.icon}</span>
+          <div style="flex:1">
+            <div class="phrase-en">${p.en}</div>
+            <div class="phrase-ar">${p.ar}</div>
+            <div class="phrase-ex">${p.ex}</div>
+          </div>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="ct"><span class="ic">🎯</span> خطة التطور باللغة الإنجليزية</div>
+    ${[
+      ['الآن','تعلم ٥ كلمات يومياً من هذا القسم','١٠ دقائق — قبل النوم أو بعد الفطور'],
+      ['الشهر الأول','اقرأ مقالة إنجليزية قصيرة أسبوعياً','BBC Learning English — مجاني وممتاز'],
+      ['٣ أشهر','شاهد محتوى تقني بالإنجليزية','YouTube: CS50, Fireship, Traversy Media'],
+      ['٦ أشهر','ابدأ التفكير بالإنجليزية','حدّث نفسك بالإنجليزية عند المذاكرة'],
+      ['السنة الأولى','اكتب CV إنجليزي احترافي','الفرق بين فرصة وبدون فرصة في سوق العمل'],
+    ].map(([t,g,n])=>`
+      <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <span class="tag tb" style="white-space:nowrap;align-self:flex-start">${t}</span>
+        <div><div style="font-size:13px;font-weight:700">${g}</div><div style="font-size:12px;color:var(--text3);margin-top:2px">${n}</div></div>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ══════════════════════════════
+// MODAL
+// ══════════════════════════════
+function maybeCM(e){if(e.target===$('mov'))closeModal()}
+function closeModal(){$('mov').classList.remove('open');modalCB=null}
+function submitModal(){if(modalCB)modalCB()}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+setDate();
+initStreak();
+go('dash');
+</script>
+</body>
+</html>
